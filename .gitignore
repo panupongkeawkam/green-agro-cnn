@@ -1,5 +1,2 @@
-models/
-predict/
-test/
-train/
-__pycache__/
+models/*
+datasets/*
