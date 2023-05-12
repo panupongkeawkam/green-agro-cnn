@@ -1,2 +1,5 @@
 models/*
 datasets/*
+alexnet/predicted
+resnet/predicted
+**/__pycache__/

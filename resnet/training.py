@@ -15,9 +15,9 @@ batch_size = 32
 # กำหนดจำนวน class (ผลไม้ 10 ชนิด)
 num_classes = 10
 # จำนวนรอบในการ train
-num_epochs = 10
+num_epochs = 25
 # folder ที่ทำการบันทึก model
-model_save_path = f"../models/ResNet_v1_{num_epochs}epc.pt"
+model_save_path = f"../models/ResNet_v3_{num_epochs}epc.pt"
 
 dataset_path = "../datasets/train"
 

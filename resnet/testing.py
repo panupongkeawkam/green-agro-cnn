@@ -1,7 +1,9 @@
 import torch
 from torchvision.models import resnet50
+import torchvision.transforms.functional as F
 from torchvision.datasets import ImageFolder
 from torch.utils.data import DataLoader
+from PIL import Image
 
 from tqdm import tqdm
 import os
@@ -10,13 +12,27 @@ from helpers.transform import transform
 
 num_classes = 10
 
-model_path = "../models/AlexNet_v2_augmented.pt"
+model_path = "../models/ResNet_v3_25epc.pt"
 
 test_dataset = ImageFolder(root="../datasets/test", transform=transform)
 
+test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False)
+
 print(f"\nLoaded \033[94m{len(test_dataset)}\033[0m dataset to model\n")
 
-test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False)
+predicted_folder = "./predicted"
+
+if os.path.exists(predicted_folder):
+    # ล้างข้อมูล predict เก่าทั้งหมด
+    for root, dirs, files in os.walk(predicted_folder, topdown=False):
+        for file in files:
+            file_path = os.path.join(root, file)
+            os.remove(file_path)
+        for dir in dirs:
+            dir_path = os.path.join(root, dir)
+            os.rmdir(dir_path)
+
+    os.rmdir(predicted_folder)
 
 model = resnet50()
 
@@ -72,6 +88,9 @@ model_file_name = os.path.basename(model_path)
 print(f"Start testing \033[94m{model_file_name}\033[0m model...\n")
 
 print("\033[93m", end="")
+
+image_count = 0
+
 for images, labels in tqdm(test_loader):
     outputs = model(images)
     _, predicted = torch.max(outputs, 1)
@@ -85,6 +104,26 @@ for images, labels in tqdm(test_loader):
 
     true_classes[true_label] += 1
     predict_classes[true_label] += result
+
+    dir_path = os.path.join("./predicted", true_label, "correct" if result == 1 else "wrong")
+
+    src_image_file_path = test_dataset.imgs[image_count][0]
+
+    # จำแนกและบันทึกภาพที่ถูกหรือผิด
+    for image, label in zip(images, labels):
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
+
+        src_image = Image.open(src_image_file_path).convert('RGB')
+
+        file_name = os.path.basename(src_image_file_path)
+        file_path = os.path.join(dir_path, f"{predicted_label}_{image_count}.jpeg")
+
+        src_image.save(file_path)
+        src_image.close()
+
+    image_count += 1
+
 print("\033[0m", end="")
 
 print()
