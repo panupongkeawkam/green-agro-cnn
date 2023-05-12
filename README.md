@@ -22,10 +22,11 @@ Fruits classification with 10 variants of fruits namely apple, avocado, banana, 
 ```powershell
 pip install -r requirements.txt
 ```
-2. Config image size in `Config.py`
-3. Start testing models
+2. Config model path to test in `./alexnet/testing.py`
+3. Start testing AlexNet models
 ```powershell
-py TestingCNN.py
+cd alexnet
+py testing.py
 ```
 ## Team
 1. [Panupong Keawkam](https://github.com/panupongkeawkam) at IT KMITL
